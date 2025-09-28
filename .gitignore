@@ -13,4 +13,4 @@ modules/__pycache__/
 BUILDINGS/buildings.geojson
 MEGAPHONES/sirenes.geojson
 .vscode/settings.json
-OUTPUT/*
+OUTPUT*/*
