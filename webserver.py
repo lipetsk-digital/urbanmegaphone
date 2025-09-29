@@ -109,7 +109,7 @@ planeSquare = vtk.vtkPlaneSource()
 planeSquare.SetOrigin(0, 0, 0)
 planeSquare.SetPoint1(cfg.sizeVoxel, 0, 0)
 planeSquare.SetPoint2(0, 0, cfg.sizeVoxel)
-VizualizePoints('sq_only.csv', planeSquare, env.Colors.GetColor3d("Gold"), 0.5)
+VizualizePoints('sq_only.csv', planeSquare, env.Colors.GetColor3d("Green"), 0.5) #Gold
 planeSquare = vtk.vtkPlaneSource()
 planeSquare.SetOrigin(0, 0, 0)
 planeSquare.SetPoint1(cfg.sizeVoxel, 0, 0)
