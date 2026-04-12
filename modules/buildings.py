@@ -153,12 +153,20 @@ def VizualizePartOfVoxels(points, color, opacity):
 def VizualizeAllVoxels():
     env.logger.info("Build voxels of buildings...")
 
-    # Loop throught grid of the earth's surface cells audibility
     idx2D = 0
     totalCells = 0
-    totalFlats = 0
     totalVoxels = 0
-    audibilityFlats = 0
+    totalFlats = 0.0
+    audibilityFactFlats = 0.0
+    audibilityFactFlatsByMegaphonesOnly = 0.0
+    audibilityFactFlatsByDoorphonesOnly = 0.0
+    audibilityFactFlatsByMegaphonesAndDoorphones = 0.0
+    audibilityPlanFlats = 0.0
+    audibilityPlanFlatsByMegaphonesOnly = 0.0
+    audibilityPlanFlatsByDoorphonesOnly = 0.0
+    audibilityPlanFlatsByMegaphonesAndDoorphones = 0.0
+
+    # Loop throught grid of the earth's surface cells audibility
     for x in env.tqdm(range(env.bounds[0])):
         for y in range(env.bounds[1]):
             uib = env.uib[idx2D]
@@ -168,6 +176,7 @@ def VizualizeAllVoxels():
                 floors = env.buildings[uib*env.sizeBuilding]
                 flats = env.buildings[uib*env.sizeBuilding+2]
                 voxels = env.buildings[uib*env.sizeBuilding+3]
+                flatsPerVoxel = flats/voxels if voxels>0 else 0
                 doorphones = env.buildings[uib*env.sizeBuilding+5]
                 totalVoxels = totalVoxels + floors
                 if cfg.BuildingGroundMode != 'levels':
@@ -176,21 +185,41 @@ def VizualizeAllVoxels():
                     z = env.ground[idx2D]
                 for floor in range(floors):
                     audibility = env.audibilityVoxels[idxZ+floor]
+                    totalFlats = totalFlats + flatsPerVoxel
+
+                    # Count audibility flats for statistics
+                    if (audibility>0) or (doorphones==1):
+                        audibilityFactFlats = audibilityFactFlats + flatsPerVoxel
+                        audibilityPlanFlats = audibilityPlanFlats + flatsPerVoxel
+                    elif (audibility<0) and (doorphones==2):
+                        audibilityPlanFlats = audibilityPlanFlats + flatsPerVoxel
+                    if (audibility>0) and (doorphones==0):
+                        audibilityFactFlatsByMegaphonesOnly = audibilityFactFlatsByMegaphonesOnly + flatsPerVoxel
+                        audibilityPlanFlatsByMegaphonesOnly = audibilityPlanFlatsByMegaphonesOnly + flatsPerVoxel
+                    elif (audibility>0) and (doorphones==1):
+                        audibilityFactFlatsByMegaphonesAndDoorphones = audibilityFactFlatsByMegaphonesAndDoorphones + flatsPerVoxel
+                        audibilityPlanFlatsByMegaphonesAndDoorphones = audibilityPlanFlatsByMegaphonesAndDoorphones + flatsPerVoxel
+                    elif (audibility>0) and (doorphones==2):
+                        audibilityFactFlatsByMegaphonesOnly = audibilityFactFlatsByMegaphonesOnly + flatsPerVoxel
+                        audibilityPlanFlatsByMegaphonesAndDoorphones = audibilityPlanFlatsByMegaphonesAndDoorphones + flatsPerVoxel
+                    elif (audibility<=0) and (doorphones==1):
+                        audibilityFactFlatsByDoorphonesOnly = audibilityFactFlatsByDoorphonesOnly + flatsPerVoxel
+                        audibilityPlanFlatsByDoorphonesOnly = audibilityPlanFlatsByDoorphonesOnly + flatsPerVoxel
+                    elif (audibility<=0) and (doorphones==2):
+                        audibilityPlanFlatsByDoorphonesOnly = audibilityPlanFlatsByDoorphonesOnly + flatsPerVoxel
+
+                    # Store voxels points
                     if doorphones==1:
                         env.pntsVoxels_doorphones_fact.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
                     elif doorphones==2:
                         env.pntsVoxels_doorphones_plan.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
                     elif audibility>0:
                         env.pntsVoxels_yes.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
-                        totalFlats = totalFlats + flats/voxels
-                        audibilityFlats = audibilityFlats + flats/voxels
                     elif audibility<0:
                         env.pntsVoxels_no.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
-                        totalFlats = totalFlats + flats/voxels
                     else:
                         if flats>0:
                             env.pntsVoxels_no.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel) # not env.pntsVoxels_living
-                            totalFlats = totalFlats + flats/voxels
                         else:
                             env.pntsVoxels_industrial.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
             idx2D = idx2D + 1
@@ -208,10 +237,16 @@ def VizualizeAllVoxels():
     env.vtkPoints2CSV('vox_doorphones_plan.csv', env.pntsVoxels_doorphones_plan)
     env.logger.success("Voxels exported")
 
-    livingVoxels = env.pntsVoxels_yes.GetNumberOfPoints() + env.pntsVoxels_no.GetNumberOfPoints()
+    livingVoxels = env.pntsVoxels_doorphones_fact.GetNumberOfPoints() + env.pntsVoxels_doorphones_plan.GetNumberOfPoints() + \
+        env.pntsVoxels_yes.GetNumberOfPoints() + env.pntsVoxels_no.GetNumberOfPoints()
 
     env.writeStat("=========================================================================================================")
     env.writeStat("|| BUILDINGS STATISTICS:")
+    env.writeStat("|| {} ({}) doorphones fact voxels, {} ({}) doorphones plan voxels".format(
+                    env.printLong(env.pntsVoxels_doorphones_fact.GetNumberOfPoints()),
+                    f'{env.pntsVoxels_doorphones_fact.GetNumberOfPoints()/livingVoxels:.0%}',
+                    env.printLong(env.pntsVoxels_doorphones_plan.GetNumberOfPoints()),
+                    f'{env.pntsVoxels_doorphones_plan.GetNumberOfPoints()/livingVoxels:.0%}' ) )
     env.writeStat("|| {} ({}) audibility voxels, {} ({}) non-audibility voxels, {} non-living voxels".format(
                   env.printLong(env.pntsVoxels_yes.GetNumberOfPoints()),
                   f'{env.pntsVoxels_yes.GetNumberOfPoints()/livingVoxels:.0%}',
@@ -224,9 +259,43 @@ def VizualizeAllVoxels():
                      env.printLong(totalVoxels), f'{totalVoxels/env.countVoxels:.0%}', env.printLong(env.countVoxels) )
     env.writeStat("|| {} ({}) of {} living voxels analyzed".format(
                     env.printLong(livingVoxels), f'{livingVoxels/env.countLivingVoxels:.0%}', env.printLong(env.countLivingVoxels) ), "info" )
-    env.writeStat("|| {} ({}) of {} flats are audibility, {} ({}) non-audibility flats".format(
-                       env.printLong(round(audibilityFlats)), f'{audibilityFlats/totalFlats:.0%}', env.printLong(round(totalFlats)),
-                       env.printLong(round(totalFlats)-round(audibilityFlats)), f'{(1-audibilityFlats/totalFlats):.0%}' ) )
+    env.writeStat("|| Now:")
+    env.writeStat("|| {} ({}) of {} flats are audibility:".format(
+        env.printLong(round(audibilityFactFlats)),
+        f'{audibilityFactFlats/totalFlats:.0%}',
+        env.printLong(round(totalFlats))
+    ))
+    env.writeStat("|| {} ({}) by doorphones, {} ({}) by megaphones, {} ({}) both".format(
+        env.printLong(round(audibilityFactFlatsByDoorphonesOnly)),
+        f'{audibilityFactFlatsByDoorphonesOnly/totalFlats:.0%}',
+        env.printLong(round(audibilityFactFlatsByMegaphonesOnly)),
+        f'{audibilityFactFlatsByMegaphonesOnly/totalFlats:.0%}',
+        env.printLong(round(audibilityFactFlatsByMegaphonesAndDoorphones)),
+        f'{audibilityFactFlatsByMegaphonesAndDoorphones/totalFlats:.0%}'
+    ))
+    env.writeStat("|| {} ({}) non-audibility flats".format(
+        env.printLong(round(totalFlats)-round(audibilityFactFlats)),
+        f'{(1-audibilityFactFlats/totalFlats):.0%}'
+    ))
+
+    env.writeStat("|| In the future:")
+    env.writeStat("|| {} ({}) of {} flats are audibility:".format(
+        env.printLong(round(audibilityPlanFlats)),
+        f'{audibilityPlanFlats/totalFlats:.0%}',
+        env.printLong(round(totalFlats))
+    ))
+    env.writeStat("|| {} ({}) by doorphones, {} ({}) by megaphones, {} ({}) both".format(
+        env.printLong(round(audibilityPlanFlatsByDoorphonesOnly)),
+        f'{audibilityPlanFlatsByDoorphonesOnly/totalFlats:.0%}',
+        env.printLong(round(audibilityPlanFlatsByMegaphonesOnly)),
+        f'{audibilityPlanFlatsByMegaphonesOnly/totalFlats:.0%}',
+        env.printLong(round(audibilityPlanFlatsByMegaphonesAndDoorphones)),
+        f'{audibilityPlanFlatsByMegaphonesAndDoorphones/totalFlats:.0%}'
+    ))
+    env.writeStat("|| {} ({}) non-audibility flats".format(
+        env.printLong(round(totalFlats)-round(audibilityPlanFlats)),
+        f'{(1-audibilityPlanFlats/totalFlats):.0%}'
+    ))
     env.writeStat("|| {} ({}) of {} flats analyzed".format(
                        env.printLong(round(totalFlats)), f'{totalFlats/env.countFlats:.0%}', env.printLong(env.countFlats) ), "info" )
     env.writeStat("=========================================================================================================")
