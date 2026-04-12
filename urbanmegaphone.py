@@ -16,6 +16,7 @@ import modules.bounds # Read raster and DEM data and calculate wolrd bounds
 import modules.earth # Read raster and DEM data and generate the earth's surface
 import modules.buildings # Generate voxels for earth ground vector buildings
 import modules.megaphones # Load megaphones points and calculate audibility level
+import modules.doorphones # Load doorphones data and assign to buildings
 import modules.audibility # Multiprocessing audibility calculation
 
 # Only for main process
@@ -34,6 +35,7 @@ if __name__ == '__main__':
     modules.buildings.GenerateBuildings() # Process vector buildings and generate voxel's world
     modules.earth.PrepareLivingBuffer() # Calculate buffer zones around living buildings if ShowSquares mode is 'buffer'
     modules.megaphones.LoadMegaphones() # Load megaphones points
+    modules.doorphones.LoadDoorphones() # Load doorphones data and assign flags to gdfBuildings
     env.clearMemory() # Clear memory from unused variables
     modules.audibility.CalculateAudibility() # Calculate audibility of squares and voxels
     modules.earth.VizualizeAllSquares() # Generate squares of the earth's surface vizualization

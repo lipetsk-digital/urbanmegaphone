@@ -11,6 +11,8 @@ folderRASTER = 'RASTER' # Subfolder (in current folder) with raster tiles (.tif)
 folderDEM = 'DEM' # Subfolder (in current folder) with DEM tiles (.tif)
 folderBUILDINGS = 'BUILDINGS' # Subfolder (in current folder) with vector buildings polygones (.geojson)
 folderMEGAPHONES = 'MEGAPHONES' # Subfolder (in current folder) with vector megaphones points (.geojson)
+folderDOORPHONES_PLAN = 'DOORPHONES/PLAN' # Subfolder (in current folder) with .txt lists of FIAS codes buildings with installed doorphones
+folderDOORPHONES_FACT = 'DOORPHONES/FACT' # Subfolder (in current folder) with .txt lists of FIAS codes buildings with planned doorphones
 folderOUTPUT = 'OUTPUT' # Subfolder (in current folder) with output files
 
 # Debug log detail level, from verbose to terse:

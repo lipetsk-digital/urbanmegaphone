@@ -1,117 +1,125 @@
 {
-	"info": {
-		"_postman_id": "120c70d8-4a88-4f23-a636-164efa679a99",
-		"name": "pkk.rosreestr.ru",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39137568"
-	},
-	"item": [
-		{
-			"name": "5",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/json, text/plain, */*",
-						"disabled": true
-					},
-					{
-						"key": "Accept-Language",
-						"value": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-						"disabled": true
-					},
-					{
-						"key": "Connection",
-						"value": "keep-alive",
-						"disabled": true
-					},
-					{
-						"key": "Cookie",
-						"value": "session-cookie=1805782839ff067e1e2aeab2beb261f5296978a5d3acac5e0adb80636665c0d6e8973100c3c7f5f08910833c8504c34d",
-						"disabled": true
-					},
-					{
-						"key": "Referer",
-						"value": "https://pkk.rosreestr.ru/",
-						"disabled": true
-					},
-					{
-						"key": "Sec-Fetch-Dest",
-						"value": "empty",
-						"disabled": true
-					},
-					{
-						"key": "Sec-Fetch-Mode",
-						"value": "cors",
-						"disabled": true
-					},
-					{
-						"key": "Sec-Fetch-Site",
-						"value": "same-origin",
-						"disabled": true
-					},
-					{
-						"key": "User-Agent",
-						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-						"disabled": true
-					},
-					{
-						"key": "sec-ch-ua",
-						"value": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
-						"disabled": true
-					},
-					{
-						"key": "sec-ch-ua-mobile",
-						"value": "?0",
-						"disabled": true
-					},
-					{
-						"key": "sec-ch-ua-platform",
-						"value": "\"Windows\"",
-						"disabled": true
-					}
-				],
-				"url": {
-					"raw": "https://pkk.rosreestr.ru/api/features/5?text=48:20:0011206:64&limit=40&skip=0&tolerance=2",
-					"protocol": "https",
-					"host": [
-						"pkk",
-						"rosreestr",
-						"ru"
-					],
-					"path": [
-						"api",
-						"features",
-						"5"
-					],
-					"query": [
-						{
-							"key": "_",
-							"value": "1730921756230",
-							"disabled": true
-						},
-						{
-							"key": "text",
-							"value": "48:20:0011206:64"
-						},
-						{
-							"key": "limit",
-							"value": "40"
-						},
-						{
-							"key": "skip",
-							"value": "0"
-						},
-						{
-							"key": "tolerance",
-							"value": "2"
-						}
-					]
-				},
-				"description": "Generated from cURL: curl 'https://pkk.rosreestr.ru/api/features/5?_=1730921756230&text=48:20:0021002:4932&limit=40&skip=0&tolerance=2' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Cookie: session-cookie=1805782839ff067e1e2aeab2beb261f5296978a5d3acac5e0adb80636665c0d6e8973100c3c7f5f08910833c8504c34d' \\\r\n  -H 'Referer: https://pkk.rosreestr.ru/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-origin' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --insecure"
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "120c70d8-4a88-4f23-a636-164efa679a99",
+    "name": "pkk.rosreestr.ru",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39137568"
+  },
+  "item": [
+    {
+      "name": "5",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json, text/plain, */*",
+            "disabled": true
+          },
+          {
+            "key": "Accept-Language",
+            "value": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+            "disabled": true
+          },
+          {
+            "key": "Connection",
+            "value": "keep-alive",
+            "disabled": true
+          },
+          {
+            "key": "Cookie",
+            "value": "session-cookie=1805782839ff067e1e2aeab2beb261f5296978a5d3acac5e0adb80636665c0d6e8973100c3c7f5f08910833c8504c34d",
+            "disabled": true
+          },
+          {
+            "key": "Referer",
+            "value": "https://pkk.rosreestr.ru/",
+            "disabled": true
+          },
+          {
+            "key": "Sec-Fetch-Dest",
+            "value": "empty",
+            "disabled": true
+          },
+          {
+            "key": "Sec-Fetch-Mode",
+            "value": "cors",
+            "disabled": true
+          },
+          {
+            "key": "Sec-Fetch-Site",
+            "value": "same-origin",
+            "disabled": true
+          },
+          {
+            "key": "User-Agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+            "disabled": true
+          },
+          {
+            "key": "sec-ch-ua",
+            "value": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
+            "disabled": true
+          },
+          {
+            "key": "sec-ch-ua-mobile",
+            "value": "?0",
+            "disabled": true
+          },
+          {
+            "key": "sec-ch-ua-platform",
+            "value": "\"Windows\"",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "https://pkk.rosreestr.ru/api/features/5?text=48:20:0011206:64&limit=40&skip=0&tolerance=2",
+          "protocol": "https",
+          "host": [
+            "pkk",
+            "rosreestr",
+            "ru"
+          ],
+          "path": [
+            "api",
+            "features",
+            "5"
+          ],
+          "query": [
+            {
+              "key": "_",
+              "value": "1730921756230",
+              "disabled": true
+            },
+            {
+              "key": "text",
+              "value": "48:20:0011206:64"
+            },
+            {
+              "key": "limit",
+              "value": "40"
+            },
+            {
+              "key": "skip",
+              "value": "0"
+            },
+            {
+              "key": "tolerance",
+              "value": "2"
+            }
+          ]
+        },
+        "description": "Generated from cURL: curl 'https://pkk.rosreestr.ru/api/features/5?_=1730921756230&text=48:20:0021002:4932&limit=40&skip=0&tolerance=2' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Cookie: session-cookie=1805782839ff067e1e2aeab2beb261f5296978a5d3acac5e0adb80636665c0d6e8973100c3c7f5f08910833c8504c34d' \\\r\n  -H 'Referer: https://pkk.rosreestr.ru/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-origin' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --insecure"
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
 }

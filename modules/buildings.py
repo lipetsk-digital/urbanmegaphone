@@ -168,6 +168,7 @@ def VizualizeAllVoxels():
                 floors = env.buildings[uib*env.sizeBuilding]
                 flats = env.buildings[uib*env.sizeBuilding+2]
                 voxels = env.buildings[uib*env.sizeBuilding+3]
+                doorphones = env.buildings[uib*env.sizeBuilding+5]
                 totalVoxels = totalVoxels + floors
                 if cfg.BuildingGroundMode != 'levels':
                     z = env.buildings[uib*env.sizeBuilding+1]
@@ -175,7 +176,11 @@ def VizualizeAllVoxels():
                     z = env.ground[idx2D]
                 for floor in range(floors):
                     audibility = env.audibilityVoxels[idxZ+floor]
-                    if audibility>0:
+                    if doorphones==1:
+                        env.pntsVoxels_doorphones_fact.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
+                    elif doorphones==2:
+                        env.pntsVoxels_doorphones_plan.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
+                    elif audibility>0:
                         env.pntsVoxels_yes.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
                         totalFlats = totalFlats + flats/voxels
                         audibilityFlats = audibilityFlats + flats/voxels
@@ -193,12 +198,14 @@ def VizualizeAllVoxels():
     VizualizePartOfVoxels(env.pntsVoxels_yes, env.Colors.GetColor3d("Green"), 1)
     VizualizePartOfVoxels(env.pntsVoxels_no, env.Colors.GetColor3d("Tomato"), 1)
     VizualizePartOfVoxels(env.pntsVoxels_industrial, env.Colors.GetColor3d("Gray"), 1)
-    VizualizePartOfVoxels(env.pntsVoxels_doorphones, env.Colors.GetColor3d("Cyan"), 1)
+    VizualizePartOfVoxels(env.pntsVoxels_doorphones_fact, env.Colors.GetColor3d("Cyan"), 1)
+    VizualizePartOfVoxels(env.pntsVoxels_doorphones_plan, env.Colors.GetColor3d("Magenta"), 1)
 
     env.vtkPoints2CSV('vox_industrial.csv', env.pntsVoxels_industrial)
     env.vtkPoints2CSV('vox_yes.csv', env.pntsVoxels_yes)
     env.vtkPoints2CSV('vox_no.csv', env.pntsVoxels_no)
-    env.vtkPoints2CSV('vox_doorphones.csv', env.pntsVoxels_doorphones)
+    env.vtkPoints2CSV('vox_doorphones_fact.csv', env.pntsVoxels_doorphones_fact)
+    env.vtkPoints2CSV('vox_doorphones_plan.csv', env.pntsVoxels_doorphones_plan)
     env.logger.success("Voxels exported")
 
     livingVoxels = env.pntsVoxels_yes.GetNumberOfPoints() + env.pntsVoxels_no.GetNumberOfPoints()

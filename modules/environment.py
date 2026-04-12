@@ -66,13 +66,14 @@ countVoxels = None # Total count of buildings voxels
 countLivingVoxels = None # Count of living-buildings voxels
 audibilityVoxels = None # Just array
 
-# Linear array: 1D-array of the fives values of unsigned short integer values [0, 65535]:
-# [UIB*5] value - count of floors
-# [UIB*5+1] value - integer vertical coordinate of voxel of the first floor (if BuildingGroundMode != 'levels')
-# [UIB*5+2] value - count of flats in building (0 for non-living buildings)
-# [UIB*5+3] value - count of total voxels
-# [UIB*5+4] value - count of total voxels with audibility
-sizeBuilding = 5 # count of values for each building
+# Linear array: 1D-array of the six values of unsigned short integer values [0, 65535]:
+# [UIB*6] value - count of floors
+# [UIB*6+1] value - integer vertical coordinate of voxel of the first floor (if BuildingGroundMode != 'levels')
+# [UIB*6+2] value - count of flats in building (0 for non-living buildings)
+# [UIB*6+3] value - count of total voxels
+# [UIB*6+4] value - count of total voxels with audibility
+# [UIB*6+5] value - flag of doorphones: 0 (no), 1 (fact), 2 (plan)
+sizeBuilding = 6 # count of values for each building
 countBuildings = None # count of buildings
 LivingBuildings = None # count of living buildings
 countFlats = None # count of flats
@@ -186,7 +187,8 @@ actSquares = [] # vtkActor
 pntsVoxels_yes = vtkPoints()
 pntsVoxels_no = vtkPoints()
 pntsVoxels_industrial = vtkPoints()
-pntsVoxels_doorphones = vtkPoints()
+pntsVoxels_doorphones_fact = vtkPoints()
+pntsVoxels_doorphones_plan = vtkPoints()
 pldtVoxels = [] # vtkPolyData
 cbVoxels = [] # vtkCubeSource
 glphVoxels = [] # vtkGlyph3D
@@ -277,9 +279,6 @@ def writeStat(message, level="success"):
 # ============================================
 def clearMemory():
     logger.info("Clear memory. It may take a few minutes...")
-
-    global gdfBuildings
-    del gdfBuildings
 
     global gdfCells
     del gdfCells
