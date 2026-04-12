@@ -193,10 +193,12 @@ def VizualizeAllVoxels():
     VizualizePartOfVoxels(env.pntsVoxels_yes, env.Colors.GetColor3d("Green"), 1)
     VizualizePartOfVoxels(env.pntsVoxels_no, env.Colors.GetColor3d("Tomato"), 1)
     VizualizePartOfVoxels(env.pntsVoxels_industrial, env.Colors.GetColor3d("Gray"), 1)
+    VizualizePartOfVoxels(env.pntsVoxels_doorphones, env.Colors.GetColor3d("Cyan"), 1)
 
     env.vtkPoints2CSV('vox_industrial.csv', env.pntsVoxels_industrial)
     env.vtkPoints2CSV('vox_yes.csv', env.pntsVoxels_yes)
     env.vtkPoints2CSV('vox_no.csv', env.pntsVoxels_no)
+    env.vtkPoints2CSV('vox_doorphones.csv', env.pntsVoxels_doorphones)
     env.logger.success("Voxels exported")
 
     livingVoxels = env.pntsVoxels_yes.GetNumberOfPoints() + env.pntsVoxels_no.GetNumberOfPoints()

@@ -186,6 +186,7 @@ actSquares = [] # vtkActor
 pntsVoxels_yes = vtkPoints()
 pntsVoxels_no = vtkPoints()
 pntsVoxels_industrial = vtkPoints()
+pntsVoxels_doorphones = vtkPoints()
 pldtVoxels = [] # vtkPolyData
 cbVoxels = [] # vtkCubeSource
 glphVoxels = [] # vtkGlyph3D

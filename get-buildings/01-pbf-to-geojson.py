@@ -9,7 +9,7 @@ import geojson
 from pyproj import Transformer
 
 folder = Path.cwd() / 'get-buildings' / 'lipetsk'
-pbf_file = folder / 'central-fed-district-latest.osm.pbf'
+pbf_file = folder / 'central-fed-district-260411.osm.pbf'
 transformer = Transformer.from_crs(4326, 3857,always_xy=True)
 
 # ------------------------------------------------------------------------------------------
