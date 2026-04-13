@@ -49,7 +49,7 @@ def VizualizePoints(fileP, glyph, color, opacity):
     actor.SetMapper(mapper)
     actor.GetProperty().SetColor(color)
     actor.GetProperty().SetOpacity(opacity)
-    renderer.AddActor(actor)
+    return actor
     print(f"{fileP} loaded")
 
 # ============================================
@@ -105,33 +105,39 @@ planeSquare = vtk.vtkPlaneSource()
 planeSquare.SetOrigin(0, 0, 0)
 planeSquare.SetPoint1(cfg.sizeVoxel, 0, 0)
 planeSquare.SetPoint2(0, 0, cfg.sizeVoxel)
-VizualizePoints('sq_full.csv', planeSquare, env.Colors.GetColor3d("Green"), 0.5)
-VizualizePoints('sq_only.csv', planeSquare, env.Colors.GetColor3d("Gold"), 0.5) #Gold
-VizualizePoints('sq_no.csv', planeSquare, env.Colors.GetColor3d("Tomato"), 0.5)
+renderer.AddActor(VizualizePoints('sq_full.csv', planeSquare, env.Colors.GetColor3d("Green"), 0.5))
+renderer.AddActor(VizualizePoints('sq_only.csv', planeSquare, env.Colors.GetColor3d("Gold"), 0.5))
+renderer.AddActor(VizualizePoints('sq_no.csv', planeSquare, env.Colors.GetColor3d("Tomato"), 0.5))
+
 cubeVoxel = vtk.vtkCubeSource()
 cubeVoxel.SetXLength(cfg.sizeVoxel-cfg.gapVoxel)
 cubeVoxel.SetYLength(cfg.sizeVoxel-cfg.gapVoxel)
 cubeVoxel.SetZLength(cfg.sizeVoxel-cfg.gapVoxel)
-VizualizePoints('vox_yes.csv', cubeVoxel, env.Colors.GetColor3d("Green"), 1.0)
-VizualizePoints('vox_no.csv', cubeVoxel, env.Colors.GetColor3d("Tomato"), 1.0)
-VizualizePoints('vox_industrial.csv', cubeVoxel, env.Colors.GetColor3d("Gray"), 1.0)
-VizualizePoints('vox_doorphones_fact_yes.csv', cubeVoxel, env.Colors.GetColor3d("Cyan"), 1.0)
-VizualizePoints('vox_doorphones_fact_no.csv', cubeVoxel, env.Colors.GetColor3d("Cyan"), 1.0)
-VizualizePoints('vox_doorphones_plan_yes.csv', cubeVoxel, env.Colors.GetColor3d("Magenta"), 1.0)
-VizualizePoints('vox_doorphones_plan_no.csv', cubeVoxel, env.Colors.GetColor3d("Magenta"), 1.0)
+renderer.AddActor(VizualizePoints('vox_yes.csv', cubeVoxel, env.Colors.GetColor3d("Green"), 1.0))
+renderer.AddActor(VizualizePoints('vox_no.csv', cubeVoxel, env.Colors.GetColor3d("Tomato"), 1.0))
+renderer.AddActor(VizualizePoints('vox_industrial.csv', cubeVoxel, env.Colors.GetColor3d("Gray"), 1.0))
+actDoorphonesFactYes = VizualizePoints('vox_doorphones_fact_yes.csv', cubeVoxel, env.Colors.GetColor3d("Cyan"), 1.0)
+actVoxelsFactYes = VizualizePoints('vox_doorphones_fact_yes.csv', cubeVoxel, env.Colors.GetColor3d("Green"), 1.0)
+actDoorphonesFactNo = VizualizePoints('vox_doorphones_fact_no.csv', cubeVoxel, env.Colors.GetColor3d("Cyan"), 1.0)
+actVoxelsFactNo = VizualizePoints('vox_doorphones_fact_no.csv', cubeVoxel, env.Colors.GetColor3d("Tomato"), 1.0)
+actDoorphonesPlanYes = VizualizePoints('vox_doorphones_plan_yes.csv', cubeVoxel, env.Colors.GetColor3d("Magenta"), 1.0)
+actVoxelsPlanYes = VizualizePoints('vox_doorphones_plan_yes.csv', cubeVoxel, env.Colors.GetColor3d("Green"), 1.0)
+actDoorphonesPlanNo = VizualizePoints('vox_doorphones_plan_no.csv', cubeVoxel, env.Colors.GetColor3d("Magenta"), 1.0)
+actVoxelsPlanNo = VizualizePoints('vox_doorphones_plan_no.csv', cubeVoxel, env.Colors.GetColor3d("Tomato"), 1.0)
+
 coneMegaphone = vtk.vtkConeSource()
 coneMegaphone.SetDirection(0, 1, 0)
 coneMegaphone.SetHeight(cfg.sizeVoxel)
 coneMegaphone.SetRadius(cfg.sizeVoxel/4)
-VizualizePoints('mgphn_buildings.csv', coneMegaphone, env.Colors.GetColor3d("GreenYellow"), 1.0)
+renderer.AddActor(VizualizePoints('mgphn_buildings.csv', coneMegaphone, env.Colors.GetColor3d("GreenYellow"), 1.0))
 coneMegaphone = vtk.vtkConeSource()
 coneMegaphone.SetDirection(0, 1, 0)
 coneMegaphone.SetHeight(cfg.heightStansaloneMegaphone)
 coneMegaphone.SetRadius(cfg.sizeVoxel)
-VizualizePoints('mgphn_standalone.csv', coneMegaphone, env.Colors.GetColor3d("GreenYellow"), 1.0)
+renderer.AddActor(VizualizePoints('mgphn_standalone.csv', coneMegaphone, env.Colors.GetColor3d("GreenYellow"), 1.0))
 sphereMegaphone = vtk.vtkSphereSource()
 sphereMegaphone.SetRadius(cfg.sizeVoxel/4)
-VizualizePoints('mgphn_spehres.csv', sphereMegaphone, env.Colors.GetColor3d("GreenYellow"), 1.0)
+renderer.AddActor(VizualizePoints('mgphn_spehres.csv', sphereMegaphone, env.Colors.GetColor3d("GreenYellow"), 1.0))
 
 # Add lights to the scene
 modules.lighting.PrepareLights(env.Renderer) # Generate lights for 3D-visualization
@@ -153,14 +159,61 @@ renderer.ResetCamera()
 server = get_server(client_type="vue2")
 state, ctrl = server.state, server.controller
 
+@state.change("doorphonesfact")
+def update_fact(doorphonesfact, **kwargs):
+    if doorphonesfact:
+        renderer.RemoveActor(actVoxelsFactYes)
+        renderer.RemoveActor(actVoxelsFactNo)
+        renderer.AddActor(actDoorphonesFactYes)
+        renderer.AddActor(actDoorphonesFactNo)
+    else:
+        renderer.RemoveActor(actDoorphonesFactYes)
+        renderer.RemoveActor(actDoorphonesFactNo)
+        renderer.AddActor(actVoxelsFactYes)
+        renderer.AddActor(actVoxelsFactNo)
+    ctrl.view_update()
+
+@state.change("doorphonesplan")
+def update_plan(doorphonesplan, **kwargs):
+    if doorphonesplan:
+        renderer.RemoveActor(actVoxelsPlanYes)
+        renderer.RemoveActor(actVoxelsPlanNo)
+        renderer.AddActor(actDoorphonesPlanYes)
+        renderer.AddActor(actDoorphonesPlanNo)
+    else:
+        renderer.RemoveActor(actDoorphonesPlanYes)
+        renderer.RemoveActor(actDoorphonesPlanNo)
+        renderer.AddActor(actVoxelsPlanYes)
+        renderer.AddActor(actVoxelsPlanNo)
+    ctrl.view_update()
+
 # Configure Trame UI
 with SinglePageLayout(server) as layout:
     layout.title.set_text("Urban megaphone: 3D-modeling of sound wave coverage among urban buildings and streets")
     with layout.content:
         with vuetify.VContainer(fluid=True, classes="pa-0 fill-height"):
-            view = vtk_widgets.VtkRemoteView(render_window)
+            view = vtk_widgets.VtkRemoteView(render_window, interactive_quality=100, interactive_ratio=(1,))
             ctrl.on_server_ready.add(view.update)
-            
+            ctrl.view_update = view.update
+    with layout.toolbar:
+        vuetify.VSpacer()
+        vuetify.VDivider(vertical=True, classes="mx-2")
+        vuetify.VSwitch(
+            v_model=("doorphonesfact",False),
+            label="Doorphones Fact",
+            color="cyan",
+            hide_details=True,
+            dense=True,
+        )            
+        vuetify.VDivider(vertical=True, classes="mx-2")
+        vuetify.VSwitch(
+            v_model=("doorphonesplan",False),
+            label="Doorphones Plan",
+            color="purple",
+            hide_details=True,
+            dense=True,
+        )            
+
 # Start server
 if __name__ == "__main__":
     server.start(host="0.0.0.0", port=80)
