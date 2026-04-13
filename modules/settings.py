@@ -17,7 +17,7 @@ folderOUTPUT = 'OUTPUT' # Subfolder (in current folder) with output files
 
 # Debug log detail level, from verbose to terse:
 # "TRACE" or "DEBUG" or "INFO" or "SUCCESS" or "WARNING" or "ERROR" or "CRITICAL"
-logLevel = "INFO"
+logLevel = "TRACE"
 
 
 # Quality of world's detail

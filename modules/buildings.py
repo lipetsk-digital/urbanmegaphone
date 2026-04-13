@@ -15,6 +15,7 @@ from vtkmodules.vtkCommonDataModel import vtkPolyData # Use 3D-primitives
 from vtkmodules.vtkRenderingCore import (vtkActor, vtkPolyDataMapper) # Use VTK rendering
 import vtk # Use other 3D-visualization features
 import gc # For garbage collectors
+from pathlib import Path # Crossplatform pathing
 
 # Own core modules
 import modules.settings as cfg # Settings defenition
@@ -236,6 +237,9 @@ def VizualizeAllVoxels():
     env.vtkPoints2CSV('vox_doorphones_fact.csv', env.pntsVoxels_doorphones_fact)
     env.vtkPoints2CSV('vox_doorphones_plan.csv', env.pntsVoxels_doorphones_plan)
     env.logger.success("Voxels exported")
+
+    # Save buildings parameters to Excel for further analysis
+    env.gdfBuildings.drop(columns="geometry").to_excel(Path('.',cfg.folderOUTPUT, "buildings.xlsx"), index=False)
 
     livingVoxels = env.pntsVoxels_doorphones_fact.GetNumberOfPoints() + env.pntsVoxels_doorphones_plan.GetNumberOfPoints() + \
         env.pntsVoxels_yes.GetNumberOfPoints() + env.pntsVoxels_no.GetNumberOfPoints()

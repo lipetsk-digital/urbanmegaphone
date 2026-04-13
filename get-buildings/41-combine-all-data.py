@@ -12,6 +12,17 @@ individual_home_dimentions = 9.0 # Dimentions of created individual home squared
 with open(folder / 'houses.dom.gosuslugi.ru.json', encoding='utf-8') as f:
     houses = json.load(f)
 dfHouses = pd.DataFrame.from_dict(houses) 
+dfHouses['entrance'] = dfHouses['entrance'].fillna(0)
+dfHouses['uk'] = dfHouses['uk'].fillna('')
+
+# Remove houses with null cadastre number
+null_mask = dfHouses['cadastre'].isnull()
+removed_count = int(null_mask.sum())
+if removed_count > 0:
+    dfHouses = dfHouses[~null_mask].reset_index(drop=True)
+print(f"Удалено {removed_count} домов с cadastre == null")
+
+# Print houses statistics
 houses_total = len(dfHouses.index)
 flats_total = dfHouses['flats'].sum()
 print("\nDOM.GOSUSLUGI.RU houses loaded:")
@@ -43,6 +54,14 @@ gdfPKK['cadastre'] = gdfPKK['cadastre'].str[3:] # Remove unnecessary letters
 print("\nPKK.ROSREESTR.RU points of cadastre loaded:")
 print(gdfPKK)
 
+# Analyze gdfPKK: total number of points and number of points with duplicated coordinates
+coords = gdfPKK.geometry.apply(lambda p: (p.x, p.y))
+dup_mask = coords.duplicated(keep=False)
+if dup_mask.any():
+    removed = int(dup_mask.sum())
+    gdfPKK = gdfPKK[~dup_mask].reset_index(drop=True)
+    print(f"Removed {removed} PKK points with duplicated coordinates")
+
 # Load Yandex points
 pointsYandex = []
 with open(folder / 'yandex.json', encoding='utf-8') as f:
@@ -60,7 +79,7 @@ print(gdfYandex)
 # Merge DOM.GOSUSLUGI.RU houses with PKK.ROSREESTR.RU and MAP.YANDEX.RU points
 gdfHouses=dfHouses.merge(right=gdfPKK, how='left', left_on="cadastre", right_on="cadastre")
 gdfHouses=gdfHouses.merge(right=gdfYandex, how='left', left_on="fias", right_on="fias")
-gdfHouses['geometry'] = gdfHouses['geometry_x'].fillna(gdfHouses['geometry_y'])
+gdfHouses['geometry'] = gdfHouses['geometry_x'].fillna(gdfHouses['geometry_y']) # PKK is more priority than Yandex
 gdfHouses = gdfHouses.drop(['geometry_x','geometry_y'], axis='columns')
 gdfHouses = gpd.GeoDataFrame(gdfHouses)
 print("\nDOM.GOSUSLUGI.RU houses are merged with PKK.ROSREESTR.RU and MAP.YANDEX.RU map points:")
@@ -107,7 +126,7 @@ def combine(gdfMerged):
     gdfAssigned = gdfMerged[ gdfMerged['fias'].notnull() ]
     gdfOSM_assigned = gpd.GeoDataFrame(pd.concat([gdfOSM_assigned, gdfAssigned], ignore_index=True, sort=False))
     gdfOSM_unassigned = gdfMerged[ gdfMerged['fias'].isnull() ]
-    gdfOSM_unassigned = gdfOSM_unassigned.drop(['fias', 'address', 'cadastre', 'type', 'floors', 'flats'], axis='columns')
+    gdfOSM_unassigned = gdfOSM_unassigned.drop(['fias', 'address', 'cadastre', 'type', 'floors', 'flats', 'guid', 'entrance', 'uk'], axis='columns')
     houses_assigned = len(gdfOSM_assigned['fias'].dropna().unique())
     flats_assigned = gdfOSM_assigned['flats'].sum()
     print(len(gdfAssigned.index)," buildings assigned:")
@@ -126,9 +145,11 @@ def combine(gdfMerged):
 # For each OSM building find largest house 
 print("\nAssign points of the houses to OSM buildings, that are contained in them...")
 gdfOSM2 = gdfOSM.sjoin(gdfHouses, how="left", predicate='contains')
-gdfOSM2 = gdfOSM2.sort_values('flats')
+gdfOSM2 = gdfOSM2.sort_values('flats', na_position='first')
 gdfOSM2 = gdfOSM2.drop_duplicates(subset='geometry', keep="last")
 combine(gdfOSM2)
+print("\nTOP-50 of unassigned houses:")
+print(gdfHouses_unassigned.head(50).to_string())
 
 # For unassigned OSM building find nearest houses
 for distance in range(1,max_distance):
@@ -137,7 +158,7 @@ for distance in range(1,max_distance):
     gdfOSM3 = gdfOSM3.sort_values('distance')
     gdfOSM3 = gdfOSM3.drop_duplicates(subset='geometry', keep="first")
     combine(gdfOSM3)
-
+ 
 # Create buildings of individual houses without its
 gdfHousesIndividual = gdfHouses_unassigned[ gdfHouses_unassigned['flats']==1 ]
 print("Total unassigned individual houses found: ",len(gdfHousesIndividual.index))
