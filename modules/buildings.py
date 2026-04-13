@@ -188,6 +188,9 @@ def VizualizeAllVoxels():
                     audibility = env.audibilityVoxels[idxZ+floor]
                     totalFlats = totalFlats + flatsPerVoxel
 
+                    if audibility>0:
+                        env.buildings[uib*env.sizeBuilding+4] = env.buildings[uib*env.sizeBuilding+4] + 1
+
                     # Count audibility flats for statistics
                     if (audibility>0) or (doorphones==1):
                         audibilityFactFlats = audibilityFactFlats + flatsPerVoxel
@@ -240,6 +243,12 @@ def VizualizeAllVoxels():
 
     # Save buildings parameters to Excel for further analysis
     env.gdfBuildings.drop(columns="geometry").to_excel(Path('.',cfg.folderOUTPUT, "buildings.xlsx"), index=False)
+
+    # Save buildings array to text file for further analysis
+    with open(Path('.', cfg.folderOUTPUT, "uib.txt"), 'w') as f:
+        for i in range(env.countBuildings):
+            f.write(f"UIB={i}: " + ", ".join([str(env.buildings[i*env.sizeBuilding+j]) for j in range(env.sizeBuilding)]) + "\n")
+    
 
     livingVoxels = env.pntsVoxels_doorphones_fact.GetNumberOfPoints() + env.pntsVoxels_doorphones_plan.GetNumberOfPoints() + \
         env.pntsVoxels_yes.GetNumberOfPoints() + env.pntsVoxels_no.GetNumberOfPoints()
