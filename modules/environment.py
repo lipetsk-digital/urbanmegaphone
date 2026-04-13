@@ -187,8 +187,10 @@ actSquares = [] # vtkActor
 pntsVoxels_yes = vtkPoints()
 pntsVoxels_no = vtkPoints()
 pntsVoxels_industrial = vtkPoints()
-pntsVoxels_doorphones_fact = vtkPoints()
-pntsVoxels_doorphones_plan = vtkPoints()
+pntsVoxels_doorphones_fact_yes = vtkPoints()
+pntsVoxels_doorphones_fact_no = vtkPoints()
+pntsVoxels_doorphones_plan_yes = vtkPoints()
+pntsVoxels_doorphones_plan_no = vtkPoints()
 pldtVoxels = [] # vtkPolyData
 cbVoxels = [] # vtkCubeSource
 glphVoxels = [] # vtkGlyph3D
@@ -206,6 +208,8 @@ glphMegaphones = [] # vtkGlyph3D
 mapMegaphones = [] # vtkPolyDataMapper
 actMegaphones = [] # vtkActor
 
+# Arrays of VTK object: lights
+lights = [] # vtkLight
 
 # Environment initialization (applied for each process)
 # ============================================

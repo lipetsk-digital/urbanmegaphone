@@ -18,6 +18,7 @@ import modules.buildings # Generate voxels for earth ground vector buildings
 import modules.megaphones # Load megaphones points and calculate audibility level
 import modules.doorphones # Load doorphones data and assign to buildings
 import modules.audibility # Multiprocessing audibility calculation
+import modules.lighting # Generate lights for 3D-visualization
 
 # Only for main process
 if __name__ == '__main__':
@@ -46,7 +47,7 @@ if __name__ == '__main__':
     # ============================================
     env.logger.info("Prepare 3D model in viewer window...")
     env.Window.AddRenderer(env.Renderer)
-    env.Renderer.SetBackground(env.Colors.GetColor3d("ivory_black"))
+    env.Renderer.SetBackground(0.2, 0.3, 0.4) #env.Colors.GetColor3d("ivory_black")
     env.Interactor.SetRenderWindow(env.Window)
     env.Window.AddRenderer(env.Renderer)
     env.Interactor.SetRenderWindow(env.Window)
@@ -61,6 +62,8 @@ if __name__ == '__main__':
     for actor in env.actSquares: env.Renderer.AddActor(actor)
     for actor in env.actVoxels: env.Renderer.AddActor(actor)
     for actor in env.actMegaphones: env.Renderer.AddActor(actor)
+    modules.lighting.PrepareLights(env.Renderer) # Generate lights for 3D-visualization
+    for light in env.lights: env.Renderer.AddLight(light)
 
     # Prepare VTK-window
     # ============================================

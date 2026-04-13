@@ -214,9 +214,15 @@ def VizualizeAllVoxels():
 
                     # Store voxels points
                     if doorphones==1:
-                        env.pntsVoxels_doorphones_fact.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
+                        if audibility>0:
+                            env.pntsVoxels_doorphones_fact_yes.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
+                        else:
+                            env.pntsVoxels_doorphones_fact_no.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
                     elif doorphones==2:
-                        env.pntsVoxels_doorphones_plan.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
+                        if audibility>0:
+                            env.pntsVoxels_doorphones_plan_yes.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
+                        else:
+                            env.pntsVoxels_doorphones_plan_no.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
                     elif audibility>0:
                         env.pntsVoxels_yes.InsertNextPoint((x+0.5)*cfg.sizeVoxel, (z+0.5+floor)*cfg.sizeVoxel, (y+0.5)*cfg.sizeVoxel)
                     elif audibility<0:
@@ -231,14 +237,18 @@ def VizualizeAllVoxels():
     VizualizePartOfVoxels(env.pntsVoxels_yes, env.Colors.GetColor3d("Green"), 1)
     VizualizePartOfVoxels(env.pntsVoxels_no, env.Colors.GetColor3d("Tomato"), 1)
     VizualizePartOfVoxels(env.pntsVoxels_industrial, env.Colors.GetColor3d("Gray"), 1)
-    VizualizePartOfVoxels(env.pntsVoxels_doorphones_fact, env.Colors.GetColor3d("Cyan"), 1)
-    VizualizePartOfVoxels(env.pntsVoxels_doorphones_plan, env.Colors.GetColor3d("Magenta"), 1)
+    VizualizePartOfVoxels(env.pntsVoxels_doorphones_fact_yes, env.Colors.GetColor3d("Cyan"), 1)
+    VizualizePartOfVoxels(env.pntsVoxels_doorphones_fact_no, env.Colors.GetColor3d("Cyan"), 1)
+    VizualizePartOfVoxels(env.pntsVoxels_doorphones_plan_yes, env.Colors.GetColor3d("Magenta"), 1)
+    VizualizePartOfVoxels(env.pntsVoxels_doorphones_plan_no, env.Colors.GetColor3d("Magenta"), 1)
 
     env.vtkPoints2CSV('vox_industrial.csv', env.pntsVoxels_industrial)
     env.vtkPoints2CSV('vox_yes.csv', env.pntsVoxels_yes)
     env.vtkPoints2CSV('vox_no.csv', env.pntsVoxels_no)
-    env.vtkPoints2CSV('vox_doorphones_fact.csv', env.pntsVoxels_doorphones_fact)
-    env.vtkPoints2CSV('vox_doorphones_plan.csv', env.pntsVoxels_doorphones_plan)
+    env.vtkPoints2CSV('vox_doorphones_fact_yes.csv', env.pntsVoxels_doorphones_fact_yes)
+    env.vtkPoints2CSV('vox_doorphones_fact_no.csv', env.pntsVoxels_doorphones_fact_no)
+    env.vtkPoints2CSV('vox_doorphones_plan_yes.csv', env.pntsVoxels_doorphones_plan_yes)
+    env.vtkPoints2CSV('vox_doorphones_plan_no.csv', env.pntsVoxels_doorphones_plan_no)
     env.logger.success("Voxels exported")
 
     # Save buildings parameters to Excel for further analysis
@@ -250,16 +260,17 @@ def VizualizeAllVoxels():
             f.write(f"UIB={i}: " + ", ".join([str(env.buildings[i*env.sizeBuilding+j]) for j in range(env.sizeBuilding)]) + "\n")
     
 
-    livingVoxels = env.pntsVoxels_doorphones_fact.GetNumberOfPoints() + env.pntsVoxels_doorphones_plan.GetNumberOfPoints() + \
+    livingVoxels = env.pntsVoxels_doorphones_fact_yes.GetNumberOfPoints() + env.pntsVoxels_doorphones_fact_no.GetNumberOfPoints() + \
+        env.pntsVoxels_doorphones_plan_yes.GetNumberOfPoints() + env.pntsVoxels_doorphones_plan_no.GetNumberOfPoints() + \
         env.pntsVoxels_yes.GetNumberOfPoints() + env.pntsVoxels_no.GetNumberOfPoints()
 
     env.writeStat("=========================================================================================================")
     env.writeStat("|| BUILDINGS STATISTICS:")
     env.writeStat("|| {} ({}) doorphones fact voxels, {} ({}) doorphones plan voxels".format(
-                    env.printLong(env.pntsVoxels_doorphones_fact.GetNumberOfPoints()),
-                    f'{env.pntsVoxels_doorphones_fact.GetNumberOfPoints()/livingVoxels:.0%}',
-                    env.printLong(env.pntsVoxels_doorphones_plan.GetNumberOfPoints()),
-                    f'{env.pntsVoxels_doorphones_plan.GetNumberOfPoints()/livingVoxels:.0%}' ) )
+                    env.printLong(env.pntsVoxels_doorphones_fact_yes.GetNumberOfPoints() + env.pntsVoxels_doorphones_fact_no.GetNumberOfPoints()),
+                    f'{(env.pntsVoxels_doorphones_fact_yes.GetNumberOfPoints() + env.pntsVoxels_doorphones_fact_no.GetNumberOfPoints())/livingVoxels:.0%}',
+                    env.printLong(env.pntsVoxels_doorphones_plan_yes.GetNumberOfPoints() + env.pntsVoxels_doorphones_plan_no.GetNumberOfPoints()),
+                    f'{(env.pntsVoxels_doorphones_plan_yes.GetNumberOfPoints() + env.pntsVoxels_doorphones_plan_no.GetNumberOfPoints())/livingVoxels:.0%}' ) )
     env.writeStat("|| {} ({}) audibility voxels, {} ({}) non-audibility voxels, {} non-living voxels".format(
                   env.printLong(env.pntsVoxels_yes.GetNumberOfPoints()),
                   f'{env.pntsVoxels_yes.GetNumberOfPoints()/livingVoxels:.0%}',
