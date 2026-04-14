@@ -224,4 +224,4 @@ with SinglePageLayout(server) as layout:
 
 # Start server
 if __name__ == "__main__":
-    server.start(host="0.0.0.0", port=80)
+    server.start(host="0.0.0.0", port=80, timeout=0)
