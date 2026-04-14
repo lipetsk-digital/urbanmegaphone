@@ -124,6 +124,14 @@ actDoorphonesPlanYes = VizualizePoints('vox_doorphones_plan_yes.csv', cubeVoxel,
 actVoxelsPlanYes = VizualizePoints('vox_doorphones_plan_yes.csv', cubeVoxel, env.Colors.GetColor3d("Green"), 1.0)
 actDoorphonesPlanNo = VizualizePoints('vox_doorphones_plan_no.csv', cubeVoxel, env.Colors.GetColor3d("Magenta"), 1.0)
 actVoxelsPlanNo = VizualizePoints('vox_doorphones_plan_no.csv', cubeVoxel, env.Colors.GetColor3d("Tomato"), 1.0)
+renderer.AddActor(actDoorphonesFactYes)
+renderer.AddActor(actDoorphonesFactNo)
+renderer.AddActor(actVoxelsFactYes)
+renderer.AddActor(actVoxelsFactNo)
+renderer.AddActor(actDoorphonesPlanYes)
+renderer.AddActor(actDoorphonesPlanNo)
+renderer.AddActor(actVoxelsPlanYes)
+renderer.AddActor(actVoxelsPlanNo)
 
 coneMegaphone = vtk.vtkConeSource()
 coneMegaphone.SetDirection(0, 1, 0)
@@ -162,29 +170,29 @@ state, ctrl = server.state, server.controller
 @state.change("doorphonesfact")
 def update_fact(doorphonesfact, **kwargs):
     if doorphonesfact:
-        renderer.RemoveActor(actVoxelsFactYes)
-        renderer.RemoveActor(actVoxelsFactNo)
-        renderer.AddActor(actDoorphonesFactYes)
-        renderer.AddActor(actDoorphonesFactNo)
+        actVoxelsFactYes.SetVisibility(0)
+        actVoxelsFactNo.SetVisibility(0)
+        actDoorphonesFactYes.SetVisibility(1)
+        actDoorphonesFactNo.SetVisibility(1)
     else:
-        renderer.RemoveActor(actDoorphonesFactYes)
-        renderer.RemoveActor(actDoorphonesFactNo)
-        renderer.AddActor(actVoxelsFactYes)
-        renderer.AddActor(actVoxelsFactNo)
+        actDoorphonesFactYes.SetVisibility(0)
+        actDoorphonesFactNo.SetVisibility(0)
+        actVoxelsFactYes.SetVisibility(1)
+        actVoxelsFactNo.SetVisibility(1)
     ctrl.view_update()
 
 @state.change("doorphonesplan")
 def update_plan(doorphonesplan, **kwargs):
     if doorphonesplan:
-        renderer.RemoveActor(actVoxelsPlanYes)
-        renderer.RemoveActor(actVoxelsPlanNo)
-        renderer.AddActor(actDoorphonesPlanYes)
-        renderer.AddActor(actDoorphonesPlanNo)
+        actVoxelsPlanYes.SetVisibility(0)
+        actVoxelsPlanNo.SetVisibility(0)
+        actDoorphonesPlanYes.SetVisibility(1)
+        actDoorphonesPlanNo.SetVisibility(1)
     else:
-        renderer.RemoveActor(actDoorphonesPlanYes)
-        renderer.RemoveActor(actDoorphonesPlanNo)
-        renderer.AddActor(actVoxelsPlanYes)
-        renderer.AddActor(actVoxelsPlanNo)
+        actDoorphonesPlanYes.SetVisibility(0)
+        actDoorphonesPlanNo.SetVisibility(0)
+        actVoxelsPlanYes.SetVisibility(1)
+        actVoxelsPlanNo.SetVisibility(1)
     ctrl.view_update()
 
 # Configure Trame UI
